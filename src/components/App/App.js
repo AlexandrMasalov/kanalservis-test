@@ -5,8 +5,10 @@ import db from '../../db/mongoDB';
 import sortDB from '../../db/sortDB';
 import filterDB from '../../utilits/filrerDB';
 import randomID from '../../utilits/randomID';
+import pages from '../../utilits/pages';
 
 import TableData from '../TableData';
+import ButtonPage from '../ButtonPage';
 
 const initialForm = {
   columnsF: '',
@@ -21,12 +23,27 @@ function App() {
   const [valueForm, setValueForm] = useState(initialForm);
   const [valueInput, setValueInput] = useState('');
 
+  
+  
+  useEffect(() => {
+    setDataBase(() => filterDB(db, valueForm, valueInput));
+  }, [valueInput]);
+  
+  useEffect(() => {
+    setDataBase(pages(db));
+  }, []);
+  
+  const changePage = (event) => {
+    console.log(event.target.value);
+    setDataBase(pages(db, event.target.value));
+  }
+
   const sortCol = (event) => {
     const nameColumn = event.target.attributes.name.value;
     setDataBase(sortDB(dataBase, nameColumn));
     setCount(count + 1);
   };
-  
+
   const onChangeForm = (event) => {
     event.preventDefault();
     const valueFilter = event.target.value;
@@ -52,9 +69,6 @@ function App() {
     setDataBase(() => filterDB(db, valueForm, valueInput));
   };
   
-  useEffect(() => {
-    setDataBase(() => filterDB(db, valueForm, valueInput));
-  }, [valueInput])
 
   if (!dataBase) {
     return (
@@ -75,11 +89,14 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {dataBase.map((data) => (
-            <TableData data={data}/>
+          {dataBase.map((data, index) => (
+            <TableData data={data} index={index}/>
           ))}
         </tbody>
       </table>
+      <div>
+        <ButtonPage number={db.length} changePage={changePage} />
+      </div>
       <form onChange={onChangeForm}>
         <div>
           <div>

@@ -2,6 +2,7 @@ import randomID from '../../utilits/randomID';
 
 
 export default function TableData ({ data }) {
+  console.log(data);
   return(
     <tr key={data.id + randomID}>
       <td key={data.id + '23'}>{data.date}</td>
@@ -9,6 +10,5 @@ export default function TableData ({ data }) {
       <td key={data.id + '25'}>{data.amount}</td>
       <td key={data.id + '26'}>{data.distance}</td>
     </tr>
-
   )
 }
